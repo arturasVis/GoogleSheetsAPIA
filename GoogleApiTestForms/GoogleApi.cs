@@ -12,7 +12,7 @@ using System.Data;
 namespace GoogleApiTestForms
 {
 
-    internal class GoogleApi
+    public class GoogleApi
     {
         string[] Scopes = { SheetsService.Scope.Spreadsheets };
         private string ApplicationName;
@@ -41,7 +41,7 @@ namespace GoogleApiTestForms
                     "user",
                     CancellationToken.None,
                     new FileDataStore(credPath, true)).Result;
-                Console.WriteLine("Credential file saved to: " + credPath);
+                
             }
 
             // Create Google Sheets API service.
@@ -50,7 +50,7 @@ namespace GoogleApiTestForms
                 HttpClientInitializer = credential,
                 ApplicationName = ApplicationName,
             });
-            Console.WriteLine();
+            
         }
         public DataTable ReadEntries(string start, string end, string sheet)
         {
