@@ -64,10 +64,10 @@ namespace GoogleApiTestForms
             dataTable.Columns.Add(values[0][1].ToString());
             dataTable.Columns.Add(values[0][2].ToString());
             dataTable.Columns.Add(values[0][3].ToString());
-            dataTable.Columns.Add(values[0][4].ToString());
+            
             for (int i=1;i<values.Count;i++)
             {
-                dataTable.Rows.Add(values[i][0], values[i][1], values[i][2], values[i][3], values[i][4]);
+                dataTable.Rows.Add(values[i][0], values[i][1], values[i][2], values[i][3]);
             }
             return dataTable;
         }
