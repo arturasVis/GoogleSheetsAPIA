@@ -85,3 +85,5 @@ C:\Users\PC\Desktop\GoogleSheetsApi\GoogleSheetsAPI\GoogleApiTestForms\obj\Debug
 C:\Users\PC\Desktop\GoogleSheetsApi\GoogleSheetsAPI\GoogleApiTestForms\obj\Debug\GoogleApiTestForms.csproj.CopyComplete
 C:\Users\PC\Desktop\GoogleSheetsApi\GoogleSheetsAPI\GoogleApiTestForms\obj\Debug\GoogleApiTestForms.exe
 C:\Users\PC\Desktop\GoogleSheetsApi\GoogleSheetsAPI\GoogleApiTestForms\obj\Debug\GoogleApiTestForms.pdb
+C:\Users\PC\Desktop\GoogleSheetsApi\GoogleSheetsAPI\GoogleApiTestForms\bin\Debug\Database1.mdf
+C:\Users\PC\Desktop\GoogleSheetsApi\GoogleSheetsAPI\GoogleApiTestForms\bin\Debug\Database1_log.ldf

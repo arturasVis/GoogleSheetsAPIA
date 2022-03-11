@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Data;
+using System.Net;
 
 namespace GoogleApiTestForms
 {
@@ -20,6 +21,7 @@ namespace GoogleApiTestForms
         SheetsService service;
         private string path;
         UserCredential credential;
+
         public GoogleApi(string ApplicationName, string spreadsheetId, string path)
         {
             this.spreadsheetId = spreadsheetId;
@@ -41,7 +43,7 @@ namespace GoogleApiTestForms
                     "user",
                     CancellationToken.None,
                     new FileDataStore(credPath, true)).Result;
-                
+
             }
 
             // Create Google Sheets API service.
@@ -50,7 +52,7 @@ namespace GoogleApiTestForms
                 HttpClientInitializer = credential,
                 ApplicationName = ApplicationName,
             });
-            
+
         }
         public DataTable ReadEntries(string start, string end, string sheet)
         {
@@ -65,11 +67,16 @@ namespace GoogleApiTestForms
             dataTable.Columns.Add(values[0][2].ToString());
             dataTable.Columns.Add(values[0][3].ToString());
             dataTable.Columns.Add(values[0][4].ToString());
-            for (int i=1;i<values.Count;i++)
+            for (int i = 1; i < values.Count; i++)
             {
                 dataTable.Rows.Add(values[i][0], values[i][1], values[i][2], values[i][3], values[i][4]);
             }
             return dataTable;
+        }
+        public void Testing()
+        {
+            var resource = new SpreadsheetsResource(service);
+            
         }
         public void UpdateSheet(List<object> s1, string sheet, string start,string end)
         {
@@ -77,12 +84,15 @@ namespace GoogleApiTestForms
             var valueRange = new ValueRange();
             
             valueRange.Values = new List<IList<object>> { s1 };
-
+            
+            
+            
             var appendRequest = service.Spreadsheets.Values.Append(valueRange, spreadsheetId, range);
             appendRequest.ValueInputOption = SpreadsheetsResource.ValuesResource.AppendRequest.ValueInputOptionEnum.USERENTERED;
             var appendReponse = appendRequest.Execute();
         }
         
+
 
 
     }
