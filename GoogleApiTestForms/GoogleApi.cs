@@ -3,6 +3,8 @@ using Google.Apis.Sheets.v4;
 using Google.Apis.Sheets.v4.Data;
 using Google.Apis.Services;
 using Google.Apis.Util.Store;
+using Google.Apis.HangoutsChat.v1;
+using Google.Apis.HangoutsChat.v1.Data;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,12 +17,13 @@ namespace GoogleApiTestForms
 
     public class GoogleApi
     {
-        string[] Scopes = { SheetsService.Scope.Spreadsheets };
+        string[] Scopes = { SheetsService.Scope.Spreadsheets, "https://www.googleapis.com/auth/chat.bot" };
         private string ApplicationName;
         private string spreadsheetId;
         SheetsService service;
         private string path;
         UserCredential credential;
+        HangoutsChatService hangoutsChatService;
 
         public GoogleApi(string ApplicationName, string spreadsheetId, string path)
         {
@@ -53,6 +56,11 @@ namespace GoogleApiTestForms
                 ApplicationName = ApplicationName,
             });
 
+            hangoutsChatService = new HangoutsChatService(new BaseClientService.Initializer()
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = ApplicationName,
+            });
         }
         public DataTable ReadEntries(string start, string end, string sheet)
         {
@@ -91,7 +99,9 @@ namespace GoogleApiTestForms
             appendRequest.ValueInputOption = SpreadsheetsResource.ValuesResource.AppendRequest.ValueInputOptionEnum.USERENTERED;
             var appendReponse = appendRequest.Execute();
         }
-        
+
+
+      
 
 
 
