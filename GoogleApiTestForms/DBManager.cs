@@ -37,27 +37,43 @@ namespace GoogleApiTestForms
 
         public DataTable Select(string table)
         {
-            DataTable dt = new DataTable();
-            string querry = $"SELECT * FROM {table}";
-            using (_connection = new SqlConnection(sql))
-            using (SqlDataAdapter adapter = new SqlDataAdapter(querry, _connection))
+            try
             {
-                _connection.Open();
-                adapter.Fill(dt);
+                DataTable dt = new DataTable();
+                string querry = $"SELECT * FROM {table}";
+                using (_connection = new SqlConnection(sql))
+                using (SqlDataAdapter adapter = new SqlDataAdapter(querry, _connection))
+                {
+                    _connection.Open();
+                    adapter.Fill(dt);
+                }
+                return dt;
             }
-            return dt;
+            catch
+            {
+                return null; 
+            }
+            
         }
         public DataTable SelectDate(string table,string date)
         {
-            DataTable dt = new DataTable();
-            string querry = $"SELECT * FROM {table} WHERE Date='{date}'";
-            using (_connection = new SqlConnection(sql))
-            using (SqlDataAdapter adapter = new SqlDataAdapter(querry, _connection))
+            try
             {
-                _connection.Open();
-                adapter.Fill(dt);
+                DataTable dt = new DataTable();
+                string querry = $"SELECT * FROM {table} WHERE Date='{date}'";
+                using (_connection = new SqlConnection(sql))
+                using (SqlDataAdapter adapter = new SqlDataAdapter(querry, _connection))
+                {
+                    _connection.Open();
+                    adapter.Fill(dt);
+                }
+                return dt;
             }
-            return dt;
+            catch
+            {
+                return null;
+            }
+            
         }
     }
 }

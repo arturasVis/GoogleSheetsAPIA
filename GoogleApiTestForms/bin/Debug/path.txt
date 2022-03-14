@@ -1,2 +1,2 @@
-C:\Users\artel\OneDrive\Desktop\C# Shit\GoogleSheetsAPIA\
+C:\Users\PC\Desktop\GoogleSheetsApi\GoogleSheetsAPI\
 90000
