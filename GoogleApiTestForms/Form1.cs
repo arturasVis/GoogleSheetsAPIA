@@ -70,9 +70,9 @@ namespace GoogleApiTestForms
 
             int lastIndex = sheetLine.ReadEntries("!A", "E", "Open").Rows.Count;
             UpdateSheet("Open", newOrders, lastIndex, sheetLine);
-            
             richTextBox1.AppendText("Updated sheet at: " + DateTime.Now + "\n");
-
+            dataGridView1.DataSource = dBManager.SelectDate("History", DateTime.Now.ToString("MM/dd/yyyy"));
+            dataGridView2.DataSource = dBManager.SelectDate("childsku", DateTime.Now.ToString("MM/dd/yyyy"));
         }
         
         private void Tmr_Tick(object sender, EventArgs e)
@@ -83,8 +83,7 @@ namespace GoogleApiTestForms
             {
                 Run(newOrders);
             }
-            dataGridView1.DataSource = dBManager.SelectDate("History", DateTime.Now.ToString("MM/dd/yyyy"));
-            dataGridView2.DataSource = dBManager.SelectDate("childsku", DateTime.Now.ToString("MM/dd/yyyy"));
+            
 
         }
         public void index(int lastIndex,string sheet,GoogleApi sheets)
