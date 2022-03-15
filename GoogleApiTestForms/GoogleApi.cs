@@ -17,7 +17,7 @@ namespace GoogleApiTestForms
 
     public class GoogleApi
     {
-        string[] Scopes = { SheetsService.Scope.Spreadsheets, "https://www.googleapis.com/auth/chat.bot" };
+        string[] Scopes = { SheetsService.Scope.Spreadsheets};
         private string ApplicationName;
         private string spreadsheetId;
         SheetsService service;

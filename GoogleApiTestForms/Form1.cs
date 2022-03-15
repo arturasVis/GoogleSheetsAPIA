@@ -21,7 +21,7 @@ namespace GoogleApiTestForms
         DataTable csvFile1, csvFile2;
 
         DataTable newOrders=new DataTable();
-        GoogleApi sheetLine= new GoogleApi("Desktop application 1", "1fEX7dsW_gGZFugrq9IvH18IuGLP8c02rJRuzIFtYtWI", path);
+        GoogleApi sheetLine= new GoogleApi("Desktop application 1", "1ze7XiL7g5Vf_dNg7_AycXgMC2ekZQ1nnSFk9YynTii4", path);
         //GoogleApi sheetTesting = new GoogleApi("Desktop application 1", "1fEX7dsW_gGZFugrq9IvH18IuGLP8c02rJRuzIFtYtWI",path);
         public Form1()
         {
@@ -47,12 +47,16 @@ namespace GoogleApiTestForms
         }
         private void Run(DataTable newOrders)
         {
-            for (int i=0;i<newOrders.Rows.Count;i++)
-            {
-                string querry1 = $"INSERT INTO History(Orderid,SKU,QTY,Channel) VALUES " +
-                    $"('{newOrders.Rows[i][1].ToString()}','{newOrders.Rows[i][2].ToString()}','{newOrders.Rows[i][3].ToString()}','{newOrders.Rows[i][4].ToString()}')";
-                dBManager.InsertQuerry(querry1);
-            }
+                for (int i = 0; i < newOrders.Rows.Count; i++)
+                {
+                    string querry1 = $"INSERT INTO History(Orderid,SKU,QTY,Channel) VALUES " +
+                        $"('{newOrders.Rows[i][1].ToString()}','{newOrders.Rows[i][2].ToString()}','{newOrders.Rows[i][3].ToString()}','{newOrders.Rows[i][4].ToString()}')";
+                    dBManager.InsertQuerry(querry1);
+                }
+                int lastIndex = sheetLine.ReadEntries("!A", "E", "Orders").Rows.Count;
+                UpdateSheet("Orders", newOrders, lastIndex, sheetLine);
+                richTextBox1.AppendText("Updated sheet at: " + DateTime.Now + "\n");
+
             DataTable db = dBManager.Select("History");
 
             foreach (DataRow rowHistory in db.Rows)
@@ -67,24 +71,18 @@ namespace GoogleApiTestForms
                     }
                 }
             }
-
-            int lastIndex = sheetLine.ReadEntries("!A", "E", "Open").Rows.Count;
-            UpdateSheet("Open", newOrders, lastIndex, sheetLine);
-            richTextBox1.AppendText("Updated sheet at: " + DateTime.Now + "\n");
             dataGridView1.DataSource = dBManager.SelectDate("History", DateTime.Now.ToString("MM/dd/yyyy"));
             dataGridView2.DataSource = dBManager.SelectDate("childsku", DateTime.Now.ToString("MM/dd/yyyy"));
         }
         
         private void Tmr_Tick(object sender, EventArgs e)
         {
-            readCSV(path + "openorder.csv");
+            csvFile1=readCSV(path + "openorder.csv");
             var newOrders = FindNew(dBManager.SelectDate("History",DateTime.Now.ToString("MM/dd/yyyy")), csvFile1);
-            if(newOrders.Rows.Count > 0)
+            if (newOrders.Rows.Count > 0)
             {
                 Run(newOrders);
             }
-            
-
         }
         public void index(int lastIndex,string sheet,GoogleApi sheets)
         {
@@ -213,6 +211,26 @@ namespace GoogleApiTestForms
             line=sr.ReadLine();
             time = Int32.Parse(line);
         }
+
+        private void UpdateButton_Click(object sender, EventArgs e)
+        {
+            DataTable db = dBManager.Select("History");
+            foreach (DataRow rowHistory in db.Rows)
+            {
+                foreach (DataRow rowCSV2 in csvFile2.Rows)
+                {
+                    if (Int32.Parse(rowHistory[1].ToString()) == Int32.Parse(rowCSV2[1].ToString()))
+                    {
+                        string querry1 = $"INSERT INTO childsku(Id,Orderid,ChildSKU) VALUES " +
+                            $"('{Int32.Parse(rowHistory[0].ToString())}','{rowHistory[1].ToString()}','{rowCSV2[2].ToString()}')";
+                        dBManager.InsertQuerry(querry1);
+                    }
+                }
+            }
+            dataGridView1.DataSource = dBManager.SelectDate("History", DateTime.Now.ToString("MM/dd/yyyy"));
+            dataGridView2.DataSource = dBManager.SelectDate("childsku", DateTime.Now.ToString("MM/dd/yyyy"));
+        }
+
         public bool CheckForInternetConnection()
         {
             try
