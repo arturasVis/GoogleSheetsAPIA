@@ -1,0 +1,7 @@
+Create just checking support for prebuilts.
+
+Start working on part replacing support
+	Needs new database tables
+		Create a full database flowchart for clarity
+		Implent database
+	Test app and standalone app with full database support(Sorting and filtering)

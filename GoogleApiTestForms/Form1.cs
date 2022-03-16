@@ -49,10 +49,22 @@ namespace GoogleApiTestForms
         {
                 for (int i = 0; i < newOrders.Rows.Count; i++)
                 {
-                    string querry1 = $"INSERT INTO History(Orderid,SKU,QTY,Channel) VALUES " +
-                        $"('{newOrders.Rows[i][1].ToString()}','{newOrders.Rows[i][2].ToString()}','{newOrders.Rows[i][3].ToString()}','{newOrders.Rows[i][4].ToString()}')";
-                    dBManager.InsertQuerry(querry1);
-                }
+                    if (Int32.Parse(newOrders.Rows[i][3].ToString()) > 0)
+                    {
+                        for (int k = 0; k < Int32.Parse(newOrders.Rows[i][3].ToString()); k++)
+                        {
+                            string querry1 = $"INSERT INTO History(Orderid,SKU,QTY,Channel) VALUES " +
+                            $"('{newOrders.Rows[i][1].ToString()}','{newOrders.Rows[i][2].ToString()}','1','{newOrders.Rows[i][4].ToString()}')";
+                            dBManager.InsertQuerry(querry1);
+                        }
+                    }
+                    else
+                    {
+                        string querry1 = $"INSERT INTO History(Orderid,SKU,QTY,Channel) VALUES " +
+                            $"('{newOrders.Rows[i][1].ToString()}','{newOrders.Rows[i][2].ToString()}','{newOrders.Rows[i][3].ToString()}','{newOrders.Rows[i][4].ToString()}')";
+                        dBManager.InsertQuerry(querry1);
+                    }
+                 }
                 int lastIndex = sheetLine.ReadEntries("!A", "E", "Orders").Rows.Count;
                 UpdateSheet("Orders", newOrders, lastIndex, sheetLine);
                 richTextBox1.AppendText("Updated sheet at: " + DateTime.Now + "\n");
