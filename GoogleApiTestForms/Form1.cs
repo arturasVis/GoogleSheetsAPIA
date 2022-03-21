@@ -18,7 +18,7 @@ namespace GoogleApiTestForms
         static private int time;
         DataSet sheet = new DataSet();
         DBManager dBManager;
-        DataTable csvFile1, csvFile2;
+        DataTable csvFile1;
 
         DataTable newOrders=new DataTable();
         GoogleApi sheetLine= new GoogleApi("Desktop application 1", "1ze7XiL7g5Vf_dNg7_AycXgMC2ekZQ1nnSFk9YynTii4", path);
@@ -31,14 +31,14 @@ namespace GoogleApiTestForms
             dBManager = new DBManager();
             //sheetTesting.Authentication();
             csvFile1=readCSV(path + "openorder.csv");
-            csvFile2 = readCSV(path + "openorderProgram.csv");
+            
             var newOrders = FindNew(dBManager.Select("History"), csvFile1);
             if (newOrders.Rows.Count>0)
             {
                 Run(newOrders);
             }
             dataGridView1.DataSource = dBManager.SelectDate("History", DateTime.Now.ToString("MM/dd/yyyy"));
-            dataGridView2.DataSource = dBManager.SelectDate("childsku", DateTime.Now.ToString("MM/dd/yyyy"));
+            
             Timer tmr = new Timer();
             tmr.Interval = 1000;   // milliseconds
             tmr.Tick += Tmr_Tick;  // set handler
@@ -70,21 +70,8 @@ namespace GoogleApiTestForms
                 richTextBox1.AppendText("Updated sheet at: " + DateTime.Now + "\n");
 
             DataTable db = dBManager.Select("History");
-
-            foreach (DataRow rowHistory in db.Rows)
-            {
-                foreach (DataRow rowCSV2 in csvFile2.Rows)
-                {
-                    if (Int32.Parse(rowHistory[1].ToString())==Int32.Parse(rowCSV2[1].ToString()))
-                    {
-                        string querry1 = $"INSERT INTO childsku(Id,Orderid,ChildSKU) VALUES " +
-                            $"('{Int32.Parse(rowHistory[0].ToString())}','{rowHistory[1].ToString()}','{rowCSV2[2].ToString()}')";
-                        dBManager.InsertQuerry(querry1);
-                    }
-                }
-            }
             dataGridView1.DataSource = dBManager.SelectDate("History", DateTime.Now.ToString("MM/dd/yyyy"));
-            dataGridView2.DataSource = dBManager.SelectDate("childsku", DateTime.Now.ToString("MM/dd/yyyy"));
+            
         }
         
         private void Tmr_Tick(object sender, EventArgs e)
@@ -157,11 +144,14 @@ namespace GoogleApiTestForms
                 {
                     for (int j = 0; j < FirstDataTable.Rows.Count; j++)
                     {
-
-                        if (Int32.Parse(SecondDataTable.Rows[i][1].ToString()) == Int32.Parse(FirstDataTable.Rows[j][1].ToString()))
+                        if (FirstDataTable.Rows[j][4].ToString().Trim(' ') != "Prebuilt")
                         {
-                            isDuplicate = true;
+                            if (Int32.Parse(SecondDataTable.Rows[i][1].ToString()) == Int32.Parse(FirstDataTable.Rows[j][1].ToString()))
+                            {
+                                isDuplicate = true;
+                            }
                         }
+                        
                     }
                     if (isDuplicate == false)
                     {
@@ -224,24 +214,7 @@ namespace GoogleApiTestForms
             time = Int32.Parse(line);
         }
 
-        private void UpdateButton_Click(object sender, EventArgs e)
-        {
-            DataTable db = dBManager.Select("History");
-            foreach (DataRow rowHistory in db.Rows)
-            {
-                foreach (DataRow rowCSV2 in csvFile2.Rows)
-                {
-                    if (Int32.Parse(rowHistory[1].ToString()) == Int32.Parse(rowCSV2[1].ToString()))
-                    {
-                        string querry1 = $"INSERT INTO childsku(Id,Orderid,ChildSKU) VALUES " +
-                            $"('{Int32.Parse(rowHistory[0].ToString())}','{rowHistory[1].ToString()}','{rowCSV2[2].ToString()}')";
-                        dBManager.InsertQuerry(querry1);
-                    }
-                }
-            }
-            dataGridView1.DataSource = dBManager.SelectDate("History", DateTime.Now.ToString("MM/dd/yyyy"));
-            dataGridView2.DataSource = dBManager.SelectDate("childsku", DateTime.Now.ToString("MM/dd/yyyy"));
-        }
+        
 
         public bool CheckForInternetConnection()
         {

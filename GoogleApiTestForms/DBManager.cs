@@ -12,7 +12,7 @@ namespace GoogleApiTestForms
     internal class DBManager
     {
         SqlConnection _connection;
-        string sql= ConfigurationManager.ConnectionStrings["GoogleApiTestForms.Properties.Settings.gpcdbConnectionString2"].ConnectionString;
+        string sql= ConfigurationManager.ConnectionStrings["GoogleApiTestForms.Properties.Settings.xumlocalConnectionString"].ConnectionString;
 
         
 

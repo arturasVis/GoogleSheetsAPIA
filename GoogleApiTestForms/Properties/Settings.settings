@@ -34,5 +34,13 @@
 &lt;/SerializableConnectionString&gt;</DesignTimeValue>
       <Value Profile="(Default)">Data Source=database-1.c1ft3icbrgxe.eu-west-2.rds.amazonaws.com;Initial Catalog=gpcdb;Persist Security Info=True;User ID=admin;Password=0521082600</Value>
     </Setting>
+    <Setting Name="xumlocalConnectionString" Type="(Connection string)" Scope="Application">
+      <DesignTimeValue Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;SerializableConnectionString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"&gt;
+  &lt;ConnectionString&gt;Data Source=WIN-K1TRUVHT0PC\XUMGPC;Initial Catalog=xumlocal;User ID=XumAdmin;Password=0521082600Xp&lt;/ConnectionString&gt;
+  &lt;ProviderName&gt;System.Data.SqlClient&lt;/ProviderName&gt;
+&lt;/SerializableConnectionString&gt;</DesignTimeValue>
+      <Value Profile="(Default)">Data Source=WIN-K1TRUVHT0PC\XUMGPC;Initial Catalog=xumlocal;User ID=XumAdmin;Password=0521082600Xp</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
