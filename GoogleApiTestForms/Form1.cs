@@ -77,7 +77,7 @@ namespace GoogleApiTestForms
         private void Tmr_Tick(object sender, EventArgs e)
         {
             csvFile1=readCSV(path + "openorder.csv");
-            var newOrders = FindNew(dBManager.SelectDate("History",DateTime.Now.ToString("MM/dd/yyyy")), csvFile1);
+            var newOrders = FindNew(dBManager.Select("History"), csvFile1);
             if (newOrders.Rows.Count > 0)
             {
                 Run(newOrders);
