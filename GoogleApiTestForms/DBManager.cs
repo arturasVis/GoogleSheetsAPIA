@@ -6,10 +6,12 @@ using System.Threading.Tasks;
 using System.Data.SqlClient;
 using System.Data;
 using System.Configuration;
+using System.Security.Cryptography;
+
 
 namespace GoogleApiTestForms
 {
-    internal class DBManager
+    public class DBManager
     {
         SqlConnection _connection;
         string sql= ConfigurationManager.ConnectionStrings["GoogleApiTestForms.Properties.Settings.xumlocalConnectionString"].ConnectionString;
@@ -95,5 +97,6 @@ namespace GoogleApiTestForms
             }
             
         }
+        
     }
 }

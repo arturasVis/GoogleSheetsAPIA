@@ -27,12 +27,21 @@ namespace GoogleApiTestForms
             readPath();
             dBManager = new DBManager();
             csvFile1 = readCSV(path + "openorder.csv");
-
-            var newOrders = FindNew(dBManager.Select("History"), csvFile1);
-            if (newOrders.Rows.Count > 0)
+            try
             {
-                Run(newOrders);
+                var newOrders = FindNew(dBManager.Select("History"), csvFile1);
+                if (newOrders != null)
+                {
+                    if(newOrders.Rows.Count > 0)
+                        Run(newOrders);
+                }
             }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            
             dataGridView1.DataSource = dBManager.SelectDate("History", DateTime.Now.ToString("MM/dd/yyyy"));
 
             Timer tmr = new Timer();
@@ -50,40 +59,47 @@ namespace GoogleApiTestForms
             dt.Columns.Add("QTY");
             dt.Columns.Add("Channel");
             dt.Columns.Add("Date");
-            dt.Columns.Add("Tracking Id");
-
-            for (int i = 0; i < newOrders.Rows.Count; i++)
+            if(newOrders != null)
             {
-                if (Int32.Parse(newOrders.Rows[i][3].ToString()) > 0)
+                for (int i = 0; i < newOrders.Rows.Count; i++)
                 {
-                    for (int k = 0; k < Int32.Parse(newOrders.Rows[i][3].ToString()); k++)
+                    if (Int32.Parse(newOrders.Rows[i][3].ToString()) > 0)
+                    {
+                        for (int k = 0; k < Int32.Parse(newOrders.Rows[i][3].ToString()); k++)
+                        {
+                            string querry1 = $"INSERT INTO History(Orderid,SKU,QTY,Channel) VALUES " +
+                                $"('{newOrders.Rows[i][1].ToString()}','{newOrders.Rows[i][2].ToString()}','1','{newOrders.Rows[i][4].ToString()}')";
+                            dBManager.InsertQuerry(querry1);
+                            DataTable NewOrder = dBManager.SelectOrder("History", newOrders.Rows[i][1].ToString());
+                            dt.Rows.Add(NewOrder.Rows[0][0].ToString(), newOrders.Rows[i][1].ToString(), newOrders.Rows[i][2].ToString(), newOrders.Rows[i][3].ToString(), newOrders.Rows[i][4].ToString(), " ");
+                        }
+                    }
+                    else
                     {
                         string querry1 = $"INSERT INTO History(Orderid,SKU,QTY,Channel) VALUES " +
-                            $"('{newOrders.Rows[i][1].ToString()}','{newOrders.Rows[i][2].ToString()}','1','{newOrders.Rows[i][4].ToString()}')";
+                            $"('{newOrders.Rows[i][1].ToString()}','{newOrders.Rows[i][2].ToString()}','{newOrders.Rows[i][3].ToString()}','{newOrders.Rows[i][4].ToString()}')";
                         dBManager.InsertQuerry(querry1);
-                        DataTable NewOrder = dBManager.SelectOrder("History", newOrders.Rows[i][1].ToString());
-                        dt.Rows.Add(NewOrder.Rows[0][0].ToString(), newOrders.Rows[i][1].ToString(), newOrders.Rows[i][2].ToString(), newOrders.Rows[i][3].ToString(), newOrders.Rows[i][4].ToString(), " ", newOrders.Rows[i][5].ToString());
                     }
                 }
-                else
-                {
-                    string querry1 = $"INSERT INTO History(Orderid,SKU,QTY,Channel) VALUES " +
-                        $"('{newOrders.Rows[i][1].ToString()}','{newOrders.Rows[i][2].ToString()}','{newOrders.Rows[i][3].ToString()}','{newOrders.Rows[i][4].ToString()}')";
-                    dBManager.InsertQuerry(querry1);
-                }
+                richTextBox1.AppendText("Updated sheet at: " + DateTime.Now + "\n");
+                dataGridView1.DataSource = dBManager.SelectDate("History", DateTime.Now.ToString("MM/dd/yyyy"));
+                dt.Clear();
             }
-            richTextBox1.AppendText("Updated sheet at: " + DateTime.Now + "\n");
-            dataGridView1.DataSource = dBManager.SelectDate("History", DateTime.Now.ToString("MM/dd/yyyy"));
-            dt.Clear();
+            else
+            {
+                richTextBox1.Text="No new orders";
+            }
+            
         }
 
         private void Tmr_Tick(object sender, EventArgs e)
         {
             csvFile1 = readCSV(path + "openorder.csv");
             var newOrders = FindNew(dBManager.Select("History"), csvFile1);
-            if (newOrders.Rows.Count > 0)
+            if (newOrders != null)
             {
-                Run(newOrders);
+                if (newOrders.Rows.Count > 0)
+                    Run(newOrders);
             }
         }
 
@@ -95,14 +111,13 @@ namespace GoogleApiTestForms
             dt.Columns.Add("SKU");
             dt.Columns.Add("QTY");
             dt.Columns.Add("Channel");
-            dt.Columns.Add("Tracking Id");
 
             try
             {
                 foreach (var lines in File.ReadLines(filePath))
                 {
                     string[] line = lines.Split(',');
-                    dt.Rows.Add(null, line[0].Trim('"'), line[1].Trim('"'), line[2].Trim('"'), line[3].Trim('"'), line[4].Trim('"'));
+                    dt.Rows.Add(null, line[0].Trim('"'), line[1].Trim('"'), line[2].Trim('"'), line[3].Trim('"'));
                 }
             }
             catch
@@ -120,30 +135,47 @@ namespace GoogleApiTestForms
             dt.Columns.Add("SKU");
             dt.Columns.Add("QTY");
             dt.Columns.Add("Channel");
-            dt.Columns.Add("Tracking Id");
 
             // Create a HashSet and populate it with order numbers from FirstDataTable
             HashSet<int> existingOrderNumbers = new HashSet<int>();
-            foreach (DataRow row in FirstDataTable.Rows)
+            if (FirstDataTable != null)
             {
-                if (row[4].ToString().Trim(' ') != "Prebuilt")
+                foreach (DataRow row in FirstDataTable.Rows)
                 {
-                    existingOrderNumbers.Add(Int32.Parse(row[1].ToString()));
+                    if (row[4].ToString().Trim(' ') != "Prebuilt")
+                    {
+                        existingOrderNumbers.Add(Int32.Parse(row[1].ToString()));
+                    }
                 }
             }
+            else
+            {
+                richTextBox1.AppendText("First Datatable is null\n");
+                return null;
+            }
+            
+            
 
             // Loop through SecondDataTable and check against the HashSet for duplicates
-            foreach (DataRow row in SecondDataTable.Rows)
+            if(SecondDataTable != null)
             {
-                int orderNumber = Int32.Parse(row[1].ToString());
-                bool isDuplicate = existingOrderNumbers.Contains(orderNumber);
-
-                if ((!isDuplicate && !String.IsNullOrEmpty(row[5].ToString())) ||
-                    (!isDuplicate && row[4].ToString().Contains("FBA")))
+                foreach (DataRow row in SecondDataTable.Rows)
                 {
-                    dt.Rows.Add(null, row[1], row[2], row[3], row[4], row[5]);
+                    int orderNumber = Int32.Parse(row[1].ToString());
+                    bool isDuplicate = existingOrderNumbers.Contains(orderNumber);
+
+                    if (!isDuplicate)
+                    {
+                        dt.Rows.Add(null, row[1], row[2], row[3], row[4]);
+                    }
                 }
             }
+            else
+            {
+                richTextBox1.AppendText("Second Datatable is null\n");
+                return null;
+            }
+            
 
             return dt;
         }
