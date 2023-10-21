@@ -75,10 +75,17 @@ namespace GoogleApiTestForms
             dataTable.Columns.Add(values[0][2].ToString());
             dataTable.Columns.Add(values[0][3].ToString());
             dataTable.Columns.Add(values[0][4].ToString());
-            for (int i = 1; i < values.Count; i++)
+            if (values.Count>0)
             {
-                dataTable.Rows.Add(values[i][0], values[i][1], values[i][2], values[i][3], values[i][4]);
+                for (int i = 1; i < values.Count; i++)
+                {
+                    if (values[i].Count>4)
+                    {
+                        dataTable.Rows.Add(values[i][0], values[i][1], values[i][2], values[i][3], values[i][4]);
+                    }
+                }
             }
+            
             return dataTable;
         }
         public void Testing()
@@ -100,7 +107,7 @@ namespace GoogleApiTestForms
             var appendReponse = appendRequest.Execute();
         }
 
-
+        
       
 
 

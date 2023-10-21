@@ -55,6 +55,26 @@ namespace GoogleApiTestForms
             }
             
         }
+        public DataTable SelectOrder(string table,string orderId)
+        {
+            try
+            {
+                DataTable dt = new DataTable();
+                string querry = $"SELECT * FROM {table} WHERE Orderid = '{orderId}'";
+                using (_connection = new SqlConnection(sql))
+                using (SqlDataAdapter adapter = new SqlDataAdapter(querry, _connection))
+                {
+                    _connection.Open();
+                    adapter.Fill(dt);
+                }
+                return dt;
+            }
+            catch
+            {
+                return null;
+            }
+
+        }
         public DataTable SelectDate(string table,string date)
         {
             try
